@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, createRef } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -26,9 +26,9 @@ const DateSpan = styled.span`
 interface MessageBoxProps {}
 
 const MessageBox: React.FC<MessageBoxProps> = () => {
-  const messageListRef = React.createRef<HTMLDivElement>();
+  const messageListRef = createRef<HTMLDivElement>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     messageListRef.current!.scrollTo(
       messageListRef.current!.scrollTop,
       messageListRef.current!.scrollHeight

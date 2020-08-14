@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 const InputStyle = styled.input`
   padding: 1rem;
   border-radius: 7px;
