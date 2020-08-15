@@ -29,17 +29,17 @@ const Button = styled.button`
     }
   }
 `;
-interface ChannelsProps {}
 
-const Channels: React.FC<ChannelsProps> = () => {
-  const channels = [
-    'announcements',
-    'general',
-    'frontend',
-    'backend',
-    'random',
-  ];
+export interface Channel {
+  id: string;
+  name: string;
+}
 
+interface ChannelsProps {
+  channels: Channel[];
+}
+
+const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   return (
     <>
       <ChannelsTitles>
@@ -48,7 +48,7 @@ const Channels: React.FC<ChannelsProps> = () => {
       </ChannelsTitles>
       <ul>
         {channels.map((channel) => (
-          <ChannelItem key={channel}># {channel}</ChannelItem>
+          <ChannelItem key={channel.id}># {channel.name}</ChannelItem>
         ))}
       </ul>
 
