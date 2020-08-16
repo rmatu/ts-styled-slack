@@ -5,7 +5,7 @@ import DirectMessages from './DirectMessages';
 import { gql, useQuery } from '@apollo/client';
 
 const MEMBERSHIP_QUERY = gql`
-  {
+  query SidebarQuery {
     Membership(where: { userid: { _eq: "user1" } }) {
       id
       direct

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+
+import { StoreContext, Actions } from '../store/store';
 
 const ChannelsTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -40,6 +42,12 @@ interface ChannelsProps {
 }
 
 const Channels: React.FC<ChannelsProps> = ({ channels }) => {
+  const { dispatch } = useContext(StoreContext);
+
+  const selectChannel = (id: string) => {
+    dispatch({ type: Actions.SELECTED_CHANNEL, payload: id });
+  };
+
   return (
     <>
       <ChannelsTitles>
@@ -48,7 +56,12 @@ const Channels: React.FC<ChannelsProps> = ({ channels }) => {
       </ChannelsTitles>
       <ul>
         {channels.map((channel) => (
-          <ChannelItem key={channel.id}># {channel.name}</ChannelItem>
+          <ChannelItem
+            onClick={() => selectChannel(channel.id)}
+            key={channel.id}
+          >
+            # {channel.name}
+          </ChannelItem>
         ))}
       </ul>
 

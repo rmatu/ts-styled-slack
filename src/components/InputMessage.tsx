@@ -37,7 +37,7 @@ const SubmitButton = styled.button`
 //String! -> can't be null
 
 const SUBMIT_MESSAGE_MUTATION = gql`
-  mutation SubmitMessage($userId: String!, $body: String, $channelId: uuid!) {
+  mutation MessageQuery($userId: String!, $body: String, $channelId: uuid!) {
     insert_Message(
       objects: { userId: $userId, body: $body, channelId: $channelId }
     ) {

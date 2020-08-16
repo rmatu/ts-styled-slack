@@ -1,6 +1,6 @@
 import React, { useEffect, createRef } from 'react';
 import styled from 'styled-components';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useSubscription } from '@apollo/client';
 
 const Container = styled.div`
   margin-top: 85px;
@@ -24,13 +24,14 @@ const DateSpan = styled.span`
   color: darkgrey;
 `;
 
-const MESSAGE_QUERY = gql`
-  {
+const MESSAGE_SUBSCRIPTION = gql`
+  subscription MessageSubscription {
     Message(
       where: { channelId: { _eq: "614d63e1-6761-4dfe-846f-629b310637c4" } }
     ) {
-      body
+      id
       date
+      body
       User {
         username
       }
@@ -53,7 +54,7 @@ interface MessageBoxProps {}
 
 const MessageBox: React.FC<MessageBoxProps> = () => {
   const messageListRef = createRef<HTMLDivElement>();
-  const { loading, data } = useQuery<any>(MESSAGE_QUERY);
+  const { loading, data } = useSubscription<any>(MESSAGE_SUBSCRIPTION);
 
   useEffect(() => {
     messageListRef.current!.scrollTo(
