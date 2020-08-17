@@ -1,11 +1,17 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useEffect } from 'react';
+
+const initialChannel = localStorage.getItem('selected_channel')
+  ? JSON.parse(localStorage.getItem('selected_channel')!)
+  : { id: '', name: 'general' };
 
 const initialStoreValue = {
-  selectedChannel: '',
+  selectedChannel: initialChannel,
+  user: localStorage.getItem('current_user') || '',
 };
 
 export enum Actions {
   'SELECTED_CHANNEL',
+  'USER',
 }
 
 export const StoreContext = createContext<Context>({
@@ -13,20 +19,33 @@ export const StoreContext = createContext<Context>({
   dispatch: () => '',
 });
 
-type Action = { type: Actions.SELECTED_CHANNEL; payload: string };
+type SelectedChannelAction = {
+  type: Actions.SELECTED_CHANNEL;
+  payload: { id: string; name: string };
+};
 
+type UserAction = {
+  type: Actions.USER;
+  payload: string;
+};
+
+type Action = SelectedChannelAction | UserAction;
 interface State {
-  selectedChannel: string;
+  selectedChannel: { id: string; name: string };
+  user: string;
 }
 
-interface Context extends State {
+export interface Context extends State {
   dispatch: (action: Action, payload?: any) => void;
 }
 
 const storeReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case Actions.SELECTED_CHANNEL:
-      return { selectedChannel: action.payload };
+      return { ...state, selectedChannel: action.payload };
+
+    case Actions.USER:
+      return { ...state, user: action.payload };
 
     default:
       throw new Error();
@@ -39,6 +58,23 @@ interface Props {
 
 export const StoreContextProvider = (props: Props) => {
   const [store, dispatch] = useReducer(storeReducer, initialStoreValue);
+
+  useEffect(() => {
+    localStorage.setItem(
+      'selected_channel',
+      JSON.stringify(store.selectedChannel)
+    );
+  }, [store.selectedChannel]);
+
+  useEffect(() => {
+    if (!store.user) {
+      const value = prompt('Select a user');
+      if (value) {
+        dispatch({ type: Actions.USER, payload: value });
+        localStorage.setItem('current_user', value);
+      }
+    }
+  }, [store.user]);
 
   return (
     <StoreContext.Provider value={{ ...store, dispatch }}>

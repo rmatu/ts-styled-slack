@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { Status } from './Sidebar';
 import { Channel } from './Channels';
+import { StoreContext, Actions } from '../store/store';
 
 const MessagesTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -17,6 +18,7 @@ const MessagesTitles = styled.div`
 
 const MessageItem = styled.li`
   margin: 0.25rem 0;
+  cursor: pointer;
 `;
 
 interface DirectMessageProps {
@@ -24,6 +26,12 @@ interface DirectMessageProps {
 }
 
 const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
+  const { dispatch } = useContext(StoreContext);
+
+  const selectChannel = (channel: { id: string; name: string }) => {
+    dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
+  };
+
   return (
     <>
       <MessagesTitles>
@@ -32,7 +40,12 @@ const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
       </MessagesTitles>
       <ul>
         {channels.map((channel) => (
-          <MessageItem key={channel.id}>
+          <MessageItem
+            onClick={() =>
+              selectChannel({ id: channel.id, name: channel.name })
+            }
+            key={channel.id}
+          >
             <Status /> {channel.name}
           </MessageItem>
         ))}

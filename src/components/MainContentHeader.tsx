@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { StoreContext, Context } from '../store/store';
 
 const Container = styled.div`
   position: fixed;
@@ -44,11 +45,13 @@ const Input = styled.input`
 interface MainContentHeaderProps {}
 
 const MainContentHeader: React.FC<MainContentHeaderProps> = () => {
+  const { selectedChannel } = useContext<Context>(StoreContext);
+
   return (
     <Container>
       <Title>
         <div>
-          <h3>#general</h3>
+          <h3>#{selectedChannel.name}</h3>
         </div>
         <div>
           <i className="far fa-user" />

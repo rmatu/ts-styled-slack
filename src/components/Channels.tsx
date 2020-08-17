@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+// import { gql, useMutation } from '@apollo/client';
 
 import { StoreContext, Actions } from '../store/store';
+import Finder from './Finder';
 
 const ChannelsTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -16,6 +18,7 @@ const ChannelsTitles = styled.div`
 
 const ChannelItem = styled.li`
   margin: 0.25rem 0;
+  cursor: pointer;
 `;
 
 const Button = styled.button`
@@ -28,6 +31,7 @@ const Button = styled.button`
     margin-top: 1rem;
     i {
       margin-right: 5px;
+      cursor: pointer;
     }
   }
 `;
@@ -41,23 +45,36 @@ interface ChannelsProps {
   channels: Channel[];
 }
 
+// const CREATE_CHANNEL_MUTATION = gql`
+//   mutation CreateChannel{
+//    insert_Channel(objects: {})
+//   }
+// `;
+
 const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   const { dispatch } = useContext(StoreContext);
+  // const [submitMessage] = useMutation<any>(CREATE_CHANNEL_MUTATION);
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(true);
 
-  const selectChannel = (id: string) => {
-    dispatch({ type: Actions.SELECTED_CHANNEL, payload: id });
+  const selectChannel = (channel: { id: string; name: string }) => {
+    dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
   };
 
   return (
     <>
+      {isModalOpened ? (
+        <Finder exitCallback={() => setIsModalOpened(false)} />
+      ) : null}
       <ChannelsTitles>
         <h2>Channels</h2>
-        <i className="fas fa-plus" />
+        <i className="fas fa-plus" onClick={() => setIsModalOpened(true)} />
       </ChannelsTitles>
       <ul>
         {channels.map((channel) => (
           <ChannelItem
-            onClick={() => selectChannel(channel.id)}
+            onClick={() =>
+              selectChannel({ id: channel.id, name: channel.name })
+            }
             key={channel.id}
           >
             # {channel.name}

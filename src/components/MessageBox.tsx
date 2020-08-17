@@ -1,6 +1,8 @@
-import React, { useEffect, createRef } from 'react';
+import React, { useEffect, createRef, useContext } from 'react';
 import styled from 'styled-components';
 import { gql, useSubscription } from '@apollo/client';
+import { StoreContext, Context } from '../store/store';
+import { MessageSubscription } from '../generated/MessageSubscription';
 
 const Container = styled.div`
   margin-top: 85px;
@@ -25,10 +27,8 @@ const DateSpan = styled.span`
 `;
 
 const MESSAGE_SUBSCRIPTION = gql`
-  subscription MessageSubscription {
-    Message(
-      where: { channelId: { _eq: "614d63e1-6761-4dfe-846f-629b310637c4" } }
-    ) {
+  subscription MessageSubscription($channelId: uuid) {
+    Message(where: { channelId: { _eq: $channelId } }) {
       id
       date
       body
@@ -54,7 +54,13 @@ interface MessageBoxProps {}
 
 const MessageBox: React.FC<MessageBoxProps> = () => {
   const messageListRef = createRef<HTMLDivElement>();
-  const { loading, data } = useSubscription<any>(MESSAGE_SUBSCRIPTION);
+  const { selectedChannel } = useContext<Context>(StoreContext);
+  const { loading, data } = useSubscription<MessageSubscription>(
+    MESSAGE_SUBSCRIPTION,
+    {
+      variables: { channelId: selectedChannel.id },
+    }
+  );
 
   useEffect(() => {
     messageListRef.current!.scrollTo(
@@ -65,22 +71,31 @@ const MessageBox: React.FC<MessageBoxProps> = () => {
 
   return (
     <Container ref={messageListRef}>
-      {!loading && data.Message ? (
-        <ul>
-          {(data.Message as Message[]).map((message) => (
-            <li key={message.id}>
-              <Username>{message.User.username}</Username>
-              <DateSpan>
-                {/* {new Intl.DateTimeFormat('en-GB').format(
+      {data ? (
+        <>
+          {!loading && data.Message ? (
+            <ul>
+              {(data.Message as Message[]).map((message) => (
+                <li key={message.id}>
+                  <Username>{message.User.username}</Username>
+                  <DateSpan>
+                    {/* {new Intl.DateTimeFormat('en-GB').format(
                   new Date(message.date)
                 )} */}
-                {message.date}
-              </DateSpan>
-              <p>{message.body}</p>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+                    {message.date}
+                  </DateSpan>
+
+                  <p>{message.body}</p>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <p>No messages...</p>
+        </>
+      )}
     </Container>
   );
 };

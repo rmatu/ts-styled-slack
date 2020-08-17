@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { gql, useMutation } from '@apollo/client';
+import { StoreContext } from '../store/store';
+
+import { MessageQuery } from '../generated/MessageQuery';
 
 const InputStyle = styled.input`
   padding: 1rem;
@@ -54,7 +57,8 @@ const SUBMIT_MESSAGE_MUTATION = gql`
 interface InputProps {}
 
 const InputMessage: React.FC<InputProps> = () => {
-  const [submitMessage] = useMutation<any>(SUBMIT_MESSAGE_MUTATION);
+  const [submitMessage] = useMutation<MessageQuery>(SUBMIT_MESSAGE_MUTATION);
+  const { selectedChannel, user } = useContext(StoreContext);
 
   return (
     <>
@@ -63,8 +67,8 @@ const InputMessage: React.FC<InputProps> = () => {
           e.preventDefault();
           submitMessage({
             variables: {
-              userId: 'user1',
-              channelId: '614d63e1-6761-4dfe-846f-629b310637c4',
+              userId: user,
+              channelId: selectedChannel.id,
               body: (e.target as any).message.value,
             },
           });
