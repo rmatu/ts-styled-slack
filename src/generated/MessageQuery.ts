@@ -4,34 +4,32 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: MessageQuery
+// GraphQL query operation: MessageQuery
 // ====================================================
 
-export interface MessageQuery_insert_Message_returning {
-  __typename: "Message";
-  userId: string | null;
-  id: any;
-  body: string;
-  channelId: any;
+export interface MessageQuery_Message_User {
+  __typename: "User";
+  username: string;
 }
 
-export interface MessageQuery_insert_Message {
-  __typename: "Message_mutation_response";
+export interface MessageQuery_Message {
+  __typename: "Message";
+  id: any;
+  body: string;
+  date: any;
   /**
-   * data of the affected rows by the mutation
+   * An object relationship
    */
-  returning: MessageQuery_insert_Message_returning[];
+  User: MessageQuery_Message_User | null;
 }
 
 export interface MessageQuery {
   /**
-   * insert data into the table: "Message"
+   * fetch data from the table: "Message"
    */
-  insert_Message: MessageQuery_insert_Message | null;
+  Message: MessageQuery_Message[];
 }
 
 export interface MessageQueryVariables {
-  userId: string;
-  body?: string | null;
-  channelId: any;
+  channelid?: any | null;
 }

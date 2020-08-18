@@ -28,6 +28,6 @@ export interface CreateMembership {
 }
 
 export interface CreateMembershipVariables {
-  userId?: string | null;
-  channelId?: any | null;
+  userid?: string | null;
+  channelid?: any | null;
 }

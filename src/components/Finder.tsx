@@ -1,7 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { StoreContext, Context } from '../store/store';
+import {
+  CREATE_CHANNEL_MUTATION,
+  CREATE_MEMBERSHIP_MUTATION,
+} from '../data/mutations';
+
 import { CreateChannel } from '../generated/CreateChannel';
 import { CreateMembership } from '../generated/CreateMembership';
 
@@ -54,36 +59,29 @@ const Form = styled.form`
   }
 `;
 
-const CREATE_CHANNEL_MUTATION = gql`
-  mutation CreateChannel($name: String) {
-    insert_Channel(objects: { name: $name, group: "" }) {
-      returning {
-        id
-      }
-    }
-  }
-`;
-
-const CREATE_MEMBERSHIP_MUTATION = gql`
-  mutation CreateMembership($userid: String, $channelid: uuid) {
-    insert_Membership(objects: { userid: $userid, channelid: $channelid }) {
-      returning {
-        id
-      }
-    }
-  }
-`;
-
 interface FinderProps {
   exitCallback: () => void;
 }
-
 const Finder: React.FC<FinderProps> = ({ exitCallback }) => {
-  const { user, selectedChannel } = useContext<Context>(StoreContext);
-  const [createChannel] = useMutation<CreateChannel>(CREATE_CHANNEL_MUTATION);
+  const { user } = useContext<Context>(StoreContext);
+  const [createChannel, data] = useMutation<CreateChannel>(
+    CREATE_CHANNEL_MUTATION
+  );
   const [createMembership] = useMutation<CreateMembership>(
     CREATE_MEMBERSHIP_MUTATION
   );
+
+  //After recieving the id from createChannel, create membership
+  useEffect(() => {
+    if (data.data) {
+      createMembership({
+        variables: {
+          channelid: data.data?.insert_Channel?.returning[0].id,
+          userid: user,
+        },
+      });
+    }
+  }, [data.called, createMembership, data.data, user]);
 
   return (
     <Container>
@@ -100,12 +98,6 @@ const Finder: React.FC<FinderProps> = ({ exitCallback }) => {
             e.preventDefault();
             createChannel({
               variables: { name: e.target.channelName.value },
-            });
-            createMembership({
-              variables: {
-                channelid: selectedChannel.id,
-                userid: user,
-              },
             });
             e.target.reset();
           }}

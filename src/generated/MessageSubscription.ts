@@ -31,5 +31,5 @@ export interface MessageSubscription {
 }
 
 export interface MessageSubscriptionVariables {
-  channelId?: any | null;
+  channelid?: any | null;
 }

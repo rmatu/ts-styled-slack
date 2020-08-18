@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-// import { gql, useMutation } from '@apollo/client';
 
 import { StoreContext, Actions } from '../store/store';
 import Finder from './Finder';
@@ -44,12 +43,6 @@ export interface Channel {
 interface ChannelsProps {
   channels: Channel[];
 }
-
-// const CREATE_CHANNEL_MUTATION = gql`
-//   mutation CreateChannel{
-//    insert_Channel(objects: {})
-//   }
-// `;
 
 const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   const { dispatch } = useContext(StoreContext);

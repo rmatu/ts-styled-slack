@@ -1,7 +1,9 @@
 import React, { useEffect, createRef, useContext } from 'react';
 import styled from 'styled-components';
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import { StoreContext, Context } from '../store/store';
+
+import { MESSAGE_SUBSCRIPTION } from '../data/subscriptions';
 import { MessageSubscription } from '../generated/MessageSubscription';
 
 const Container = styled.div`
@@ -24,19 +26,6 @@ const Username = styled.span`
 
 const DateSpan = styled.span`
   color: darkgrey;
-`;
-
-const MESSAGE_SUBSCRIPTION = gql`
-  subscription MessageSubscription($channelId: uuid) {
-    Message(where: { channelId: { _eq: $channelId } }) {
-      id
-      date
-      body
-      User {
-        username
-      }
-    }
-  }
 `;
 
 interface User {

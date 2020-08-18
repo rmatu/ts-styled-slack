@@ -2,20 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import Channels, { Channel } from './Channels';
 import DirectMessages from './DirectMessages';
-import { gql, useQuery } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
+import { MEMBERSHIP_SUBSCRIPTION } from '../data/subscriptions';
 
-const MEMBERSHIP_QUERY = gql`
-  query SidebarQuery {
-    Membership(where: { userid: { _eq: "user1" } }) {
-      id
-      direct
-      Channel {
-        id
-        name
-      }
-    }
-  }
-`;
+import { SidebarSubscription } from '../generated/SidebarSubscription';
 
 const SidebarContainer = styled.div`
   height: 100%;
@@ -61,7 +51,9 @@ interface Membership {
 interface SidebarProps {}
 
 const Sidebar: React.FC<SidebarProps> = () => {
-  const { loading, data } = useQuery<any>(MEMBERSHIP_QUERY);
+  const { loading, data } = useSubscription<SidebarSubscription>(
+    MEMBERSHIP_SUBSCRIPTION
+  );
 
   return (
     <SidebarContainer>

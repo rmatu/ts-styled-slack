@@ -20,7 +20,8 @@
     "react-scripts": "3.4.3",
     "styled-components": "^5.1.1",
     "subscriptions-transport-ws": "^0.9.17",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "uuid": "^8.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
