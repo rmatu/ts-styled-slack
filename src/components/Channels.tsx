@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import { StoreContext, Actions } from '../store/store';
-import Finder from './Finder';
+import CreateChannel from './Sidebar/Channels/CreateChannel.component';
 
 const ChannelsTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -46,8 +46,8 @@ interface ChannelsProps {
 
 const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   const { dispatch } = useContext(StoreContext);
-  // const [submitMessage] = useMutation<any>(CREATE_CHANNEL_MUTATION);
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(true);
+
+  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
 
   const selectChannel = (channel: { id: string; name: string }) => {
     dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
@@ -56,7 +56,7 @@ const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   return (
     <>
       {isModalOpened ? (
-        <Finder exitCallback={() => setIsModalOpened(false)} />
+        <CreateChannel exitCallback={() => setIsModalOpened(false)} />
       ) : null}
       <ChannelsTitles>
         <h2>Channels</h2>

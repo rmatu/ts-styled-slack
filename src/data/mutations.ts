@@ -21,9 +21,9 @@ export const CREATE_MEMBERSHIP_MUTATION = gql`
 `;
 
 export const SUBMIT_MESSAGE_MUTATION = gql`
-  mutation SubmitMessage($userid: String!, $body: String, $channelid: uuid!) {
+  mutation SubmitMessage($userId: String!, $body: String, $channelId: uuid!) {
     insert_Message(
-      objects: { userId: $userid, body: $body, channelId: $channelid }
+      objects: { userId: $userId, body: $body, channelId: $channelId }
     ) {
       returning {
         userId

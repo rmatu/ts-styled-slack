@@ -5,36 +5,37 @@ import { StoreContext } from '../store/store';
 
 import { SUBMIT_MESSAGE_MUTATION } from '../data/mutations';
 
+const SubmitButton = styled.button`
+  outline: none;
+  background-color: transparent;
+  border: none;
+  border-left: ${(props) => `3px solid ${props.theme.borderColorDark}`};
+  position: fixed;
+  box-sizing: border-box;
+  padding: 1rem;
+  font-size: 1rem;
+  right: 27px;
+  bottom: 13px;
+  cursor: pointer;
+`;
 const InputStyle = styled.input`
   padding: 1rem;
   border-radius: 7px;
-  border: 3px solid darkgrey;
+  border: 3px solid ${(props) => props.theme.borderColorDark};
   font-size: 1rem;
   outline: none;
   &:hover,
   &:active,
   &:focus {
-    border: 3px solid DimGray;
+    border: 3px solid ${(props) => props.theme.hoverBorderColor};
+    & + ${SubmitButton} {
+      border-left: 3px solid ${(props) => props.theme.hoverBorderColor};
+    }
   }
   box-sizing: border-box;
   position: fixed;
   bottom: 10px;
   width: calc(100vw - 220px);
-`;
-
-const SubmitButton = styled.button`
-  border-radius: 7px;
-  outline: none;
-  background-color: white;
-  border: none;
-  border: 3px solid darkgrey;
-  height: 56px;
-  position: fixed;
-  box-sizing: border-box;
-  padding: 1.125rem;
-  right: 24px;
-  bottom: 10px;
-  cursor: pointer;
 `;
 
 interface InputProps {}

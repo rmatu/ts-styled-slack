@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { StoreContext, Context } from '../store/store';
 
+import { Input } from '../styles/Input.styles';
+
 const Container = styled.div`
   position: fixed;
   top: 0;
@@ -28,20 +30,6 @@ const Title = styled.div`
   }
 `;
 
-const Input = styled.input`
-  border: 1px solid darkgrey;
-  padding: 0.5rem;
-  border-radius: 5px;
-  outline: none;
-  &::placeholder {
-    font-size: 1rem;
-  }
-  &:hover,
-  &:active,
-  &:focus {
-    border: 1px solid DimGray;
-  }
-`;
 interface MainContentHeaderProps {}
 
 const MainContentHeader: React.FC<MainContentHeaderProps> = () => {
