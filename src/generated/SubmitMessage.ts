@@ -31,7 +31,7 @@ export interface SubmitMessage {
 }
 
 export interface SubmitMessageVariables {
-  userid: string;
+  userId: string;
   body?: string | null;
-  channelid: any;
+  channelId: any;
 }

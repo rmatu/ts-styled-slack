@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { StoreContext, Actions } from '../store/store';
 import CreateChannel from './Sidebar/Channels/CreateChannel.component';
+import JoinChannel from './Sidebar/Channels/JoinChannel.component';
 
 const ChannelsTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -22,6 +23,7 @@ const ChannelItem = styled.li`
 
 const Button = styled.button`
   background-color: transparent;
+  cursor: pointer;
   padding: 5px;
   color: white;
   border: none;
@@ -30,7 +32,6 @@ const Button = styled.button`
     margin-top: 1rem;
     i {
       margin-right: 5px;
-      cursor: pointer;
     }
   }
 `;
@@ -47,7 +48,10 @@ interface ChannelsProps {
 const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   const { dispatch } = useContext(StoreContext);
 
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const [isCreateChannelModal, setIsCreateChannelModal] = useState<boolean>(
+    false
+  );
+  const [isJoinChannelOpen, setIsJoinChannelOpen] = useState<boolean>(false);
 
   const selectChannel = (channel: { id: string; name: string }) => {
     dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
@@ -55,12 +59,18 @@ const Channels: React.FC<ChannelsProps> = ({ channels }) => {
 
   return (
     <>
-      {isModalOpened ? (
-        <CreateChannel exitCallback={() => setIsModalOpened(false)} />
+      {isCreateChannelModal ? (
+        <CreateChannel exitCallback={() => setIsCreateChannelModal(false)} />
+      ) : null}
+      {isJoinChannelOpen ? (
+        <JoinChannel exitCallback={() => setIsJoinChannelOpen(false)} />
       ) : null}
       <ChannelsTitles>
         <h2>Channels</h2>
-        <i className="fas fa-plus" onClick={() => setIsModalOpened(true)} />
+        <i
+          className="fas fa-plus"
+          onClick={() => setIsCreateChannelModal(true)}
+        />
       </ChannelsTitles>
       <ul>
         {channels.map((channel) => (
@@ -75,8 +85,10 @@ const Channels: React.FC<ChannelsProps> = ({ channels }) => {
         ))}
       </ul>
 
-      <Button className="channel-button">
-        {' '}
+      <Button
+        className="channel-button"
+        onClick={() => setIsJoinChannelOpen(true)}
+      >
         <i className="fas fa-plus" /> Add channel
       </Button>
     </>

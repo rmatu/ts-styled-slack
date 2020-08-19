@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
@@ -8,10 +8,10 @@ const Container = styled.div`
   height: 100vh;
   top: 0;
   left: 0;
-  background-color: white;
+  background-color: ${(props) => props.theme.backgroundColorLight};
   z-index: 10;
   padding: 2rem;
-  color: black;
+  color: ${(props) => props.theme.textColorDark};
   box-sizing: border-box;
   font-size: 2rem;
 `;
@@ -33,27 +33,33 @@ const ButtonClose = styled.button`
     width: 100%;
   }
   &:hover {
-    background-color: lightgrey;
+    background-color: ${(props) => props.theme.backgroundColorGrey};
   }
 `;
 
 const Title = styled.h1`
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 `;
 
-interface ModalProps {
+const ModalBody = styled.div`
+  max-width: 500px;
+  margin: 0 auto;
+`;
+
+interface Props {
   children: React.ReactNode[] | React.ReactNode;
   close: () => void;
   title: string;
 }
 
-class Modal extends React.Component<ModalProps> {
+class Modal extends React.Component<Props> {
+  //This is creating 2 divs in DOM, have to change it later
   modalRoot: HTMLDivElement;
-  constructor(props: ModalProps) {
+  constructor(props: Props) {
     super(props);
 
     this.modalRoot = document.createElement('div');
-    this.modalRoot.id = '#modal-root';
+    this.modalRoot.id = 'modal-root';
     document.body.appendChild(this.modalRoot);
   }
 
@@ -70,8 +76,10 @@ class Modal extends React.Component<ModalProps> {
               esc
             </ButtonClose>
           </ExitButtonContainer>
-          <Title>{this.props.title}</Title>
-          {this.props.children}
+          <ModalBody>
+            <Title>{this.props.title}</Title>
+            {this.props.children}
+          </ModalBody>
         </>
       </Container>,
       this.modalRoot
