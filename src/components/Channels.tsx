@@ -14,6 +14,9 @@ const ChannelsTitles = styled.div`
   h2 {
     font-size: 1rem;
   }
+  i {
+    cursor: pointer;
+  }
 `;
 
 const ChannelItem = styled.li`

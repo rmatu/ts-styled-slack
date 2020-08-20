@@ -42,3 +42,48 @@ export const ALL_CHANNELS_QUERY = gql`
     }
   }
 `;
+
+export const ALL_USERS_QUERY = gql`
+  query allUsersQuery($currentUserId: String, $filter: String) {
+    User(
+      where: { id: { _neq: $currentUserId }, username: { _ilike: $filter } }
+    ) {
+      id
+      username
+    }
+  }
+`;
+
+export const ALL_MEMBERSHIPS_FOR_USER_QUERY = gql`
+  query allMembershipsForUser($currentUserId: String) {
+    Membership(
+      where: { userid: { _eq: $currentUserId }, direct: { _eq: true } }
+    ) {
+      id
+      Channel {
+        Memberships {
+          id
+          userid
+        }
+      }
+    }
+  }
+`;
+
+export const CHECK_MEMBERSHIP_QUERY = gql`
+  query checkMembershipQuery($user1: String, $user2: String) {
+    Membership(
+      where: {
+        userid: { _eq: $user1 }
+        direct: { _eq: true }
+        Channel: { Memberships: { userid: { _eq: $user2 } } }
+      }
+    ) {
+      id
+      Channel {
+        name
+        id
+      }
+    }
+  }
+`;

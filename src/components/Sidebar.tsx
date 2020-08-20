@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
           />
           <DirectMessages
             channels={(data.Membership as Membership[])
-              .filter((membership) => !membership.direct)
+              .filter((membership) => membership.direct)
               .map((membership) => membership.Channel)}
           />
         </>

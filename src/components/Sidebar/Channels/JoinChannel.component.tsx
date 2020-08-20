@@ -11,26 +11,11 @@ import { debounce } from 'lodash';
 import { StoreContext, Actions } from '../../../store/store';
 import { JOIN_CHANNEL_MUTATION } from '../../../data/mutations';
 import { JoinChannelMutation } from '../../../generated/JoinChannelMutation';
+import { DataContainer, DataItem } from '../../../styles/DataModal.styles';
 
 interface JoinChannel {
   exitCallback: () => void;
 }
-
-const ChannelItem = styled.div`
-  padding: 1rem;
-  border-top: 1px solid ${(props) => props.theme.borderColorLight};
-  box-sizing: border-box;
-  cursor: pointer;
-`;
-
-const ChannelContainer = styled.div`
-  margin-top: 2rem;
-  max-height: calc(100vh - 300px);
-  overflow-y: auto;
-  &:last-of-type {
-    border-bottom: 1px solid ${(props) => props.theme.borderColorLight};
-  }
-`;
 
 const SearchInput = styled(Input)`
   width: 100%;
@@ -39,6 +24,7 @@ const SearchInput = styled(Input)`
 
 const JoinChannel: React.FC<JoinChannel> = ({ exitCallback }) => {
   const { user, dispatch } = useContext(StoreContext);
+
   const { data, loading, refetch } = useQuery<allChannelsQuery>(
     ALL_CHANNELS_QUERY,
     {
@@ -101,10 +87,10 @@ const JoinChannel: React.FC<JoinChannel> = ({ exitCallback }) => {
         <p>Loading...</p>
       ) : (
         <>
-          <ChannelContainer>
+          <DataContainer>
             {data?.Channel.map(
               (channel: { id: string; name: string; Memberships: any }) => (
-                <ChannelItem
+                <DataItem
                   key={channel.id}
                   onClick={() => {
                     selectChannel(
@@ -114,10 +100,10 @@ const JoinChannel: React.FC<JoinChannel> = ({ exitCallback }) => {
                   }}
                 >
                   # {channel.name}
-                </ChannelItem>
+                </DataItem>
               )
             )}
-          </ChannelContainer>
+          </DataContainer>
         </>
       )}
     </Modal>
