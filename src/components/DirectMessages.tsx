@@ -28,7 +28,6 @@ const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
     dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
   };
 
-  console.log(channels);
   return (
     <>
       <MessagesTitles>

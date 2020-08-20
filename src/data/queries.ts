@@ -36,6 +36,9 @@ export const ALL_CHANNELS_QUERY = gql`
     ) {
       id
       name
+      Memberships {
+        userid
+      }
     }
   }
 `;
