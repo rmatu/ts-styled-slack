@@ -7,29 +7,15 @@
 // GraphQL query operation: checkMembershipQuery
 // ====================================================
 
-export interface checkMembershipQuery_Membership_Channel {
+export interface checkMembershipQuery_Channel {
   __typename: "Channel";
+  id: any;
   name: string;
-  id: any;
-}
-
-export interface checkMembershipQuery_Membership {
-  __typename: "Membership";
-  id: any;
-  /**
-   * An object relationship
-   */
-  Channel: checkMembershipQuery_Membership_Channel;
 }
 
 export interface checkMembershipQuery {
   /**
-   * fetch data from the table: "Membership"
+   * fetch data from the table: "Channel"
    */
-  Membership: checkMembershipQuery_Membership[];
-}
-
-export interface checkMembershipQueryVariables {
-  user1?: string | null;
-  user2?: string | null;
+  Channel: checkMembershipQuery_Channel[];
 }

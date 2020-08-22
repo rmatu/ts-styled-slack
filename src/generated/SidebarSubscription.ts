@@ -7,25 +7,30 @@
 // GraphQL subscription operation: SidebarSubscription
 // ====================================================
 
-export interface SidebarSubscription_Membership_Channel {
+export interface SidebarSubscription_Channel_Memberships {
+  __typename: "Membership";
+  userid: string;
+  direct: boolean;
+  id: any;
+}
+
+export interface SidebarSubscription_Channel {
   __typename: "Channel";
   id: any;
   name: string;
-}
-
-export interface SidebarSubscription_Membership {
-  __typename: "Membership";
-  id: any;
-  direct: boolean;
   /**
-   * An object relationship
+   * An array relationship
    */
-  Channel: SidebarSubscription_Membership_Channel;
+  Memberships: SidebarSubscription_Channel_Memberships[];
 }
 
 export interface SidebarSubscription {
   /**
-   * fetch data from the table: "Membership"
+   * fetch data from the table: "Channel"
    */
-  Membership: SidebarSubscription_Membership[];
+  Channel: SidebarSubscription_Channel[];
+}
+
+export interface SidebarSubscriptionVariables {
+  username?: string | null;
 }

@@ -76,9 +76,11 @@ const JoinDm: React.FC<JoinDmProps> = ({ exitCallback }) => {
   );
   const { data: checkedMembership, refetch: checkedRefetch } = useQuery<
     checkMembershipQuery
-  >(CHECK_MEMBERSHIP_QUERY);
+  >(CHECK_MEMBERSHIP_QUERY([user, ...selectedUsers.map((user) => user.id)]));
 
-  const [createDMChannel] = useMutation<createDMChannel>(CREATE_DM_CHANNEL);
+  const [createDMChannel] = useMutation<createDMChannel>(
+    CREATE_DM_CHANNEL([user, ...selectedUsers.map((user) => user.id)])
+  );
 
   const fetchData = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     refetch({ currentUserId: user, filter: `%${e.target.value}%` });
@@ -94,21 +96,19 @@ const JoinDm: React.FC<JoinDmProps> = ({ exitCallback }) => {
   };
 
   const setMembership = (users: User[]) => {
-    checkedRefetch({ user1: user, user2: users[0].id }).then((res: any) => {
-      if (res.data.Membership.length) {
+    checkedRefetch().then((res: any) => {
+      console.log(res);
+      if (res.data.Channel.length) {
         dispatch({
           type: Actions.SELECTED_CHANNEL,
-          payload: res.data.Membership[0].Channel,
+          payload: res.data.Channel[0],
         });
       } else {
         createDMChannel({
           variables: {
-            user1: user,
-            user2: users[0].id,
-            title: `${user}-${users[0].id}`,
+            title: `${user}-${users.map((user) => user.id).join('-')}`,
           },
         }).then((resp) => {
-          console.log(resp);
           dispatch({
             type: Actions.SELECTED_CHANNEL,
             payload: resp!.data!.insert_Channel!.returning[0],

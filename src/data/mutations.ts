@@ -1,4 +1,5 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
+import { createMembershipTemplateMutation } from '../utils/index';
 
 export const CREATE_CHANNEL_MUTATION = gql`
   mutation CreateChannel($name: String) {
@@ -51,16 +52,15 @@ export const JOIN_CHANNEL_MUTATION = gql`
   }
 `;
 
-export const CREATE_DM_CHANNEL = gql`
-  mutation createDMChannel($user1: String!, $user2: String!, $title: String) {
+export const CREATE_DM_CHANNEL = (userids: string[]) => gql`
+  mutation createDMChannel($title: String) {
     insert_Channel(
       objects: {
         name: $title
         group: ""
         Memberships: {
           data: [
-            { userid: $user1, direct: true }
-            { userid: $user2, direct: true }
+            ${createMembershipTemplateMutation(userids).join(',')}
           ]
         }
       }

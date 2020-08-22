@@ -29,7 +29,5 @@ export interface createDMChannel {
 }
 
 export interface createDMChannelVariables {
-  user1: string;
-  user2: string;
   title?: string | null;
 }

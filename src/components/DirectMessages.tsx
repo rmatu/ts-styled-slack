@@ -6,6 +6,7 @@ import { Channel } from './Channels';
 import { StoreContext, Actions } from '../store/store';
 import { Item } from '../styles/SidebarItem.styles';
 import JoinDm from './Sidebar/DM/JoinDm.component';
+import { Membership } from './Channels';
 
 const MessagesTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -21,16 +22,33 @@ const MessagesTitles = styled.div`
   }
 `;
 
+const MembersCount = styled.span`
+  padding: 3px;
+  background-color: ${(props) => props.theme.backgroundColorGrey};
+  color: ${(props) => props.theme.textColorDark};
+  margin-right: calc(0.4rem - 1px);
+  border-radius: 80%;
+`;
+
 interface DirectMessageProps {
   channels: Channel[];
 }
 
 const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
-  const { dispatch } = useContext(StoreContext);
+  const { user, dispatch } = useContext(StoreContext);
   const [isJoinDm, setIsJoinDm] = useState<boolean>(false);
 
   const selectChannel = (channel: { id: string; name: string }) => {
     dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
+  };
+
+  const DMTitles = (channel: Channel) => {
+    return channel.Memberships.reduce((acc, value: Membership) => {
+      if (value.userid !== user) {
+        return [...acc, value.userid];
+      }
+      return acc;
+    }, [] as string[]).join(' - ');
   };
 
   return (
@@ -48,7 +66,12 @@ const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
             }
             key={channel.id}
           >
-            <Status /> {channel.name}
+            {channel.Memberships.length === 2 ? (
+              <Status />
+            ) : (
+              <MembersCount>{channel.Memberships.length - 1}</MembersCount>
+            )}
+            {DMTitles(channel)}
           </Item>
         ))}
       </ul>

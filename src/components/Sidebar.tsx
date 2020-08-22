@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import Channels, { Channel } from './Channels';
 import DirectMessages from './DirectMessages';
@@ -6,6 +6,7 @@ import { useSubscription } from '@apollo/client';
 import { MEMBERSHIP_SUBSCRIPTION } from '../data/subscriptions';
 
 import { SidebarSubscription } from '../generated/SidebarSubscription';
+import { StoreContext } from '../store/store';
 
 const SidebarContainer = styled.div`
   height: 100%;
@@ -42,17 +43,15 @@ export const Status = styled.span`
   display: inline-block;
 `;
 
-interface Membership {
-  direct: boolean;
-  id: string;
-  Channel: Channel;
-}
-
 interface SidebarProps {}
 
 const Sidebar: React.FC<SidebarProps> = () => {
+  const { user } = useContext(StoreContext);
   const { loading, data } = useSubscription<SidebarSubscription>(
-    MEMBERSHIP_SUBSCRIPTION
+    MEMBERSHIP_SUBSCRIPTION,
+    {
+      variables: { username: user },
+    }
   );
 
   return (
@@ -70,14 +69,14 @@ const Sidebar: React.FC<SidebarProps> = () => {
       {!loading && data ? (
         <>
           <Channels
-            channels={(data.Membership as Membership[])
-              .filter((membership) => !membership.direct)
-              .map((membership) => membership.Channel)}
+            channels={(data!.Channel as Channel[]).filter(
+              (channel) => !channel.Memberships[0].direct
+            )}
           />
           <DirectMessages
-            channels={(data.Membership as Membership[])
-              .filter((membership) => membership.direct)
-              .map((membership) => membership.Channel)}
+            channels={(data!.Channel as Channel[]).filter(
+              (channel) => channel.Memberships[0].direct
+            )}
           />
         </>
       ) : null}

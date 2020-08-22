@@ -39,9 +39,16 @@ const Button = styled.button`
   }
 `;
 
+export interface Membership {
+  direct: boolean;
+  id: string;
+  userid: string;
+}
+
 export interface Channel {
   id: string;
   name: string;
+  Memberships: Membership[];
 }
 
 interface ChannelsProps {

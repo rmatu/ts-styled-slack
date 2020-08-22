@@ -7,25 +7,28 @@
 // GraphQL query operation: SidebarQuery
 // ====================================================
 
-export interface SidebarQuery_Membership_Channel {
+export interface SidebarQuery_Channel_Memberships {
+  __typename: "Membership";
+  userid: string;
+}
+
+export interface SidebarQuery_Channel {
   __typename: "Channel";
   id: any;
   name: string;
-}
-
-export interface SidebarQuery_Membership {
-  __typename: "Membership";
-  id: any;
-  direct: boolean;
   /**
-   * An object relationship
+   * An array relationship
    */
-  Channel: SidebarQuery_Membership_Channel;
+  Memberships: SidebarQuery_Channel_Memberships[];
 }
 
 export interface SidebarQuery {
   /**
-   * fetch data from the table: "Membership"
+   * fetch data from the table: "Channel"
    */
-  Membership: SidebarQuery_Membership[];
+  Channel: SidebarQuery_Channel[];
+}
+
+export interface SidebarQueryVariables {
+  user: string;
 }

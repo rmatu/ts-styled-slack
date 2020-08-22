@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const MESSAGE_SUBSCRIPTION = gql`
   subscription MessageSubscription($channelId: uuid) {
@@ -14,13 +14,14 @@ export const MESSAGE_SUBSCRIPTION = gql`
 `;
 
 export const MEMBERSHIP_SUBSCRIPTION = gql`
-  subscription SidebarSubscription {
-    Membership(where: { userid: { _eq: "user2" } }) {
+  subscription SidebarSubscription($username: String) {
+    Channel(where: { Memberships: { userid: { _eq: $username } } }) {
       id
-      direct
-      Channel {
+      name
+      Memberships {
+        userid
+        direct
         id
-        name
       }
     }
   }

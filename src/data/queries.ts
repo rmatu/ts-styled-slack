@@ -1,4 +1,5 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
+import { createMembershipTemplateQuery } from '../utils';
 
 export const MESSAGE_QUERY = gql`
   query MessageQuery($channelid: uuid) {
@@ -14,13 +15,12 @@ export const MESSAGE_QUERY = gql`
 `;
 
 export const MEMBERSHIP_QUERY = gql`
-  query SidebarQuery {
-    Membership(where: { userid: { _eq: "user2" } }) {
+  query SidebarQuery($user: String!) {
+    Channel(where: { Memberships: { userid: { _eq: $user } } }) {
       id
-      direct
-      Channel {
-        id
-        name
+      name
+      Memberships {
+        userid
       }
     }
   }
@@ -70,20 +70,18 @@ export const ALL_MEMBERSHIPS_FOR_USER_QUERY = gql`
   }
 `;
 
-export const CHECK_MEMBERSHIP_QUERY = gql`
-  query checkMembershipQuery($user1: String, $user2: String) {
-    Membership(
+export const CHECK_MEMBERSHIP_QUERY = (usersid: string[]) => gql`
+  query checkMembershipQuery {
+    Channel(
       where: {
-        userid: { _eq: $user1 }
-        direct: { _eq: true }
-        Channel: { Memberships: { userid: { _eq: $user2 } } }
+        _and: [
+          {Memberships: {direct: {_eq: true}}},
+          ${createMembershipTemplateQuery(usersid).join(',')}
+        ]
       }
     ) {
       id
-      Channel {
-        name
-        id
-      }
+      name
     }
   }
 `;
