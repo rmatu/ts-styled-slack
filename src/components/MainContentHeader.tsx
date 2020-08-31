@@ -39,11 +39,11 @@ const MainContentHeader: React.FC<MainContentHeaderProps> = () => {
     <Container>
       <Title>
         <div>
-          <h3>#{selectedChannel.name}</h3>
+          <h3>#{selectedChannel ? selectedChannel.name : ''}</h3>
         </div>
         <div>
           <i className="far fa-user" />
-          42 members
+          {selectedChannel ? selectedChannel.members : 0}
         </div>
       </Title>
       <div>

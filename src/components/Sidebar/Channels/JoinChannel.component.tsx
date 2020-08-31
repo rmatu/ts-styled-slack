@@ -3,15 +3,16 @@ import Modal from '../../Modal/Modal.component';
 
 import { useQuery, useMutation } from '@apollo/client';
 import { ALL_CHANNELS_QUERY } from '../../../data/queries';
-import { allChannelsQuery } from '../../../generated/allChannelsQuery';
+
 import styled from 'styled-components';
 import { Form } from '../../../styles/ModalButtons.styles.';
 import { Input } from '../../../styles/Input.styles';
 import { debounce } from 'lodash';
 import { StoreContext, Actions } from '../../../store/store';
 import { JOIN_CHANNEL_MUTATION } from '../../../data/mutations';
-import { JoinChannelMutation } from '../../../generated/JoinChannelMutation';
+
 import { DataContainer, DataItem } from '../../../styles/DataModal.styles';
+import { Channel } from '../../Channels';
 
 interface JoinChannel {
   exitCallback: () => void;
@@ -25,15 +26,10 @@ const SearchInput = styled(Input)`
 const JoinChannel: React.FC<JoinChannel> = ({ exitCallback }) => {
   const { user, dispatch } = useContext(StoreContext);
 
-  const { data, loading, refetch } = useQuery<allChannelsQuery>(
-    ALL_CHANNELS_QUERY,
-    {
-      variables: { channelName: '%%' },
-    }
-  );
-  const [createMembership] = useMutation<JoinChannelMutation>(
-    JOIN_CHANNEL_MUTATION
-  );
+  const { data, loading, refetch } = useQuery(ALL_CHANNELS_QUERY, {
+    variables: { channelName: '%%' },
+  });
+  const [createMembership] = useMutation(JOIN_CHANNEL_MUTATION);
 
   const fetchData = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     refetch({ channelName: `%${e.target.value}%` });
@@ -45,7 +41,7 @@ const JoinChannel: React.FC<JoinChannel> = ({ exitCallback }) => {
   };
 
   const selectChannel = (
-    channel: { id: string; name: string },
+    channel: { id: string; name: string; members: number },
     Memberships: { userid: string }[]
   ) => {
     if (Memberships.some((membership) => membership.userid === user)) {
@@ -88,21 +84,23 @@ const JoinChannel: React.FC<JoinChannel> = ({ exitCallback }) => {
       ) : (
         <>
           <DataContainer>
-            {data?.Channel.map(
-              (channel: { id: string; name: string; Memberships: any }) => (
-                <DataItem
-                  key={channel.id}
-                  onClick={() => {
-                    selectChannel(
-                      { id: channel.id, name: channel.name },
-                      channel.Memberships
-                    );
-                  }}
-                >
-                  # {channel.name}
-                </DataItem>
-              )
-            )}
+            {data!.Channel.map((channel: Channel) => (
+              <DataItem
+                key={channel.id}
+                onClick={() => {
+                  selectChannel(
+                    {
+                      id: channel.id,
+                      name: channel.name,
+                      members: channel!.Memberships_aggregate.aggregate.count,
+                    },
+                    channel.Memberships
+                  );
+                }}
+              >
+                # {channel.name}
+              </DataItem>
+            ))}
           </DataContainer>
         </>
       )}

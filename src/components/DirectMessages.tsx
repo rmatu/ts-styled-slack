@@ -38,7 +38,11 @@ const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
   const { user, dispatch } = useContext(StoreContext);
   const [isJoinDm, setIsJoinDm] = useState<boolean>(false);
 
-  const selectChannel = (channel: { id: string; name: string }) => {
+  const selectChannel = (channel: {
+    id: string;
+    name: string;
+    members: number;
+  }) => {
     dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
   };
 
@@ -62,7 +66,11 @@ const DirectMessages: React.FC<DirectMessageProps> = ({ channels }) => {
         {channels.map((channel) => (
           <Item
             onClick={() =>
-              selectChannel({ id: channel.id, name: channel.name })
+              selectChannel({
+                id: channel.id,
+                name: channel.name,
+                members: channel.Memberships_aggregate.aggregate.count,
+              })
             }
             key={channel.id}
           >

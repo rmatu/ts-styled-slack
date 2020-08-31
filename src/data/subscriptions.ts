@@ -23,6 +23,11 @@ export const MEMBERSHIP_SUBSCRIPTION = gql`
         direct
         id
       }
+      Memberships_aggregate {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `;

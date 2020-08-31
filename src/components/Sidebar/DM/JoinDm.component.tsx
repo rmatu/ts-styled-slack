@@ -10,18 +10,13 @@ import {
 } from '../../../styles/ModalButtons.styles.';
 import { useQuery, useMutation } from '@apollo/client';
 import { allUsersQuery } from '../../../generated/allUsersQuery';
-import {
-  ALL_USERS_QUERY,
-  ALL_MEMBERSHIPS_FOR_USER_QUERY,
-  CHECK_MEMBERSHIP_QUERY,
-} from '../../../data/queries';
+import { ALL_USERS_QUERY, CHECK_MEMBERSHIP_QUERY } from '../../../data/queries';
 import { DataContainer, DataItem } from '../../../styles/DataModal.styles';
 import { debounce, random } from 'lodash';
 import styled from 'styled-components';
-import { allMembershipsForUser } from '../../../generated/allMembershipsForUser';
+
 import { checkMembershipQuery } from '../../../generated/checkMembershipQuery';
 import { CREATE_DM_CHANNEL } from '../../../data/mutations';
-import { createDMChannel } from '../../../generated/createDMChannel';
 
 interface User {
   username: string;
@@ -71,14 +66,12 @@ const JoinDm: React.FC<JoinDmProps> = ({ exitCallback }) => {
       filter: `%%`,
     },
   });
-  const { data: membershipsData, refetch: membershipRefetch } = useQuery(
-    ALL_MEMBERSHIPS_FOR_USER_QUERY
-  );
+
   const { data: checkedMembership, refetch: checkedRefetch } = useQuery<
     checkMembershipQuery
   >(CHECK_MEMBERSHIP_QUERY([user, ...selectedUsers.map((user) => user.id)]));
 
-  const [createDMChannel] = useMutation<createDMChannel>(
+  const [createDMChannel] = useMutation(
     CREATE_DM_CHANNEL([user, ...selectedUsers.map((user) => user.id)])
   );
 

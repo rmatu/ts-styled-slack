@@ -52,7 +52,7 @@ const InputMessage: React.FC<InputProps> = () => {
           submitMessage({
             variables: {
               userId: user,
-              channelId: selectedChannel.id,
+              channelId: selectedChannel!.id,
               body: (e.target as any).message.value,
             },
           });

@@ -6,6 +6,9 @@ import { StoreContext, Context } from '../store/store';
 import { MESSAGE_SUBSCRIPTION } from '../data/subscriptions';
 import { MessageSubscription } from '../generated/MessageSubscription';
 
+import { groupBy } from 'lodash';
+import { isToday, isYesterday } from 'date-fns';
+
 const Container = styled.div`
   margin-top: 85px;
   overflow-y: auto;
@@ -16,6 +19,14 @@ const Container = styled.div`
   p {
     margin-top: 0.25rem;
   }
+`;
+
+const DateHeader = styled.h2`
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin: 1rem 0;
+  text-transform: capitalize;
 `;
 
 const Username = styled.span`
@@ -47,8 +58,22 @@ const MessageBox: React.FC<MessageBoxProps> = () => {
   const { loading, data } = useSubscription<MessageSubscription>(
     MESSAGE_SUBSCRIPTION,
     {
-      variables: { channelId: selectedChannel.id },
+      variables: { channelId: selectedChannel!.id },
     }
+  );
+
+  let dates: any;
+  if (data && data.Message) {
+    dates = groupBy(data.Message, (message: any) =>
+      new Intl.DateTimeFormat(
+        navigator.languages ? navigator.languages[0] : 'en-US'
+      ).format(new Date(message.date))
+    );
+  }
+
+  const rtf = new (Intl as any).RelativeTimeFormat(
+    navigator.languages ? navigator.languages[0] : 'en-US',
+    { numeric: 'auto' }
   );
 
   useEffect(() => {
@@ -62,23 +87,32 @@ const MessageBox: React.FC<MessageBoxProps> = () => {
     <Container ref={messageListRef}>
       {data ? (
         <>
-          {!loading && data.Message ? (
-            <ul>
-              {(data.Message as Message[]).map((message) => (
-                <li key={message.id}>
-                  <Username>{message.User.username}</Username>
-                  <DateSpan>
-                    {/* {new Intl.DateTimeFormat('en-GB').format(
-                  new Date(message.date)
-                )} */}
-                    {message.date}
-                  </DateSpan>
-
-                  <p>{message.body}</p>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+          {!loading && data.Message
+            ? Object.keys(dates).map((key) => (
+                <div key={key}>
+                  <DateHeader>
+                    {isToday(new Date(dates[key][0].date))
+                      ? rtf.format(0, 'day')
+                      : isYesterday(new Date(dates[key][0].date))
+                      ? rtf.format(-1, 'day')
+                      : key}
+                  </DateHeader>
+                  {dates[key].map((message: any) => {
+                    return (
+                      <li key={message.id}>
+                        <Username>{message.User.username}</Username>
+                        <DateSpan>
+                          {new Intl.DateTimeFormat('en-GB').format(
+                            new Date(message.date)
+                          )}
+                        </DateSpan>
+                        <p>{message.body}</p>
+                      </li>
+                    );
+                  })}
+                </div>
+              ))
+            : null}
         </>
       ) : (
         <>

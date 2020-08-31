@@ -12,6 +12,16 @@ export interface allChannelsQuery_Channel_Memberships {
   userid: string;
 }
 
+export interface allChannelsQuery_Channel_Memberships_aggregate_aggregate {
+  __typename: "Membership_aggregate_fields";
+  count: number | null;
+}
+
+export interface allChannelsQuery_Channel_Memberships_aggregate {
+  __typename: "Membership_aggregate";
+  aggregate: allChannelsQuery_Channel_Memberships_aggregate_aggregate | null;
+}
+
 export interface allChannelsQuery_Channel {
   __typename: "Channel";
   id: any;
@@ -20,6 +30,10 @@ export interface allChannelsQuery_Channel {
    * An array relationship
    */
   Memberships: allChannelsQuery_Channel_Memberships[];
+  /**
+   * An aggregated array relationship
+   */
+  Memberships_aggregate: allChannelsQuery_Channel_Memberships_aggregate;
 }
 
 export interface allChannelsQuery {

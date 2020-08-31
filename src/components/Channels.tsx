@@ -45,10 +45,17 @@ export interface Membership {
   userid: string;
 }
 
+export interface Memberships_aggregate {
+  aggregate: {
+    count: number;
+  };
+}
+
 export interface Channel {
   id: string;
   name: string;
   Memberships: Membership[];
+  Memberships_aggregate: Memberships_aggregate;
 }
 
 interface ChannelsProps {
@@ -63,7 +70,11 @@ const Channels: React.FC<ChannelsProps> = ({ channels }) => {
   );
   const [isJoinChannelOpen, setIsJoinChannelOpen] = useState<boolean>(false);
 
-  const selectChannel = (channel: { id: string; name: string }) => {
+  const selectChannel = (channel: {
+    id: string;
+    name: string;
+    members: number;
+  }) => {
     dispatch({ type: Actions.SELECTED_CHANNEL, payload: channel });
   };
 
@@ -86,7 +97,11 @@ const Channels: React.FC<ChannelsProps> = ({ channels }) => {
         {channels.map((channel) => (
           <ChannelItem
             onClick={() =>
-              selectChannel({ id: channel.id, name: channel.name })
+              selectChannel({
+                id: channel.id,
+                name: channel.name,
+                members: channel.Memberships_aggregate.aggregate.count,
+              })
             }
             key={channel.id}
           >

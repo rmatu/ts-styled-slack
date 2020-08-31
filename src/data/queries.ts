@@ -22,6 +22,11 @@ export const MEMBERSHIP_QUERY = gql`
       Memberships {
         userid
       }
+      Memberships_aggregate {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `;
@@ -38,6 +43,11 @@ export const ALL_CHANNELS_QUERY = gql`
       name
       Memberships {
         userid
+      }
+      Memberships_aggregate {
+        aggregate {
+          count
+        }
       }
     }
   }
