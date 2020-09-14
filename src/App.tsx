@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Layout from './components/Layout';
-
 import {
   ApolloClient,
   InMemoryCache,
@@ -10,6 +9,7 @@ import {
 } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
+
 import { StoreContextProvider } from './store/store';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './theme/theme';
@@ -42,7 +42,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: 'no-cache',
+      fetchPolicy: 'network-only',
       errorPolicy: 'all',
     },
     query: {

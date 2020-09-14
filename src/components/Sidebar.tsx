@@ -6,7 +6,8 @@ import { useSubscription } from '@apollo/client';
 import { MEMBERSHIP_SUBSCRIPTION } from '../data/subscriptions';
 
 import { SidebarSubscription } from '../generated/SidebarSubscription';
-import { StoreContext } from '../store/store';
+import { StoreContext, Actions } from '../store/store';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const SidebarContainer = styled.div`
   height: 100%;
@@ -32,6 +33,7 @@ const UsernameContainer = styled.div`
   grid-column-start: 1;
   grid-column-end: 3;
   margin-top: 0.5rem;
+  cursor: pointer;
 `;
 
 export const Status = styled.span`
@@ -46,13 +48,19 @@ export const Status = styled.span`
 interface SidebarProps {}
 
 const Sidebar: React.FC<SidebarProps> = () => {
-  const { user } = useContext(StoreContext);
+  const { user, dispatch } = useContext(StoreContext);
   const { loading, data } = useSubscription<SidebarSubscription>(
     MEMBERSHIP_SUBSCRIPTION,
     {
       variables: { username: user },
     }
   );
+  const { loginWithRedirect, user: authUser, logout } = useAuth0();
+
+  const setUser = async () => {
+    await loginWithRedirect();
+    await dispatch({ type: Actions.USER, payload: authUser.name });
+  };
 
   return (
     <SidebarContainer>
@@ -61,9 +69,13 @@ const Sidebar: React.FC<SidebarProps> = () => {
         <div>
           <i className="far fa-bell" />
         </div>
+        <div>
+          <button onClick={() => logout()}>Log Out</button>
+          <button onClick={() => setUser()}>Log In</button>
+        </div>
         <UsernameContainer>
           <Status />
-          John Doe
+          {!authUser ? 'Welcome' : authUser.nickname}
         </UsernameContainer>
       </Header>
       {!loading && data ? (

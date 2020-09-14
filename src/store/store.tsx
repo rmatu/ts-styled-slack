@@ -66,16 +66,6 @@ export const StoreContextProvider = (props: Props) => {
     );
   }, [store.selectedChannel]);
 
-  useEffect(() => {
-    if (!store.user) {
-      const value = prompt('Select a user');
-      if (value) {
-        dispatch({ type: Actions.USER, payload: value });
-        localStorage.setItem('current_user', value);
-      }
-    }
-  }, [store.user]);
-
   return (
     <StoreContext.Provider value={{ ...store, dispatch }}>
       {props.children}

@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { auth0Config } from './config';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Auth0Provider {...auth0Config}>
+      <App />
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
